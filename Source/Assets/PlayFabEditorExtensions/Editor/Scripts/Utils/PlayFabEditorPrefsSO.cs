@@ -20,7 +20,7 @@ namespace PlayFab.PfEditor
                 if (_instance != null)
                     return _instance;
 
-                var settingsList = Resources.LoadAll<PlayFabEditorPrefsSO>("PlayFabEditorPrefsSO");
+                var settingsList = Resources.LoadAll<PlayFabEditorPrefsSO>("PlayFabEditorExtensions");
                 if (settingsList.Length == 1)
                     _instance = settingsList[0];
                 if (_instance != null)
