@@ -122,8 +122,6 @@ namespace PlayFab.PfEditor
 
         private static GUISkin GetUiStyle()
         {
-            Debug.Log("Packages\\PlayFabUnityEditorExtensions\\Source\\Assets\\PlayFabEditorExtensions\\Editor\\UI\\PlayFabStyles.guiskin");
-            Debug.Log($"{Path.Combine(Strings.PATH_UI, "PlayFabStyles.guiskin")}");
             return (GUISkin)AssetDatabase.LoadAssetAtPath(Path.Combine(Strings.PATH_UI, "PlayFabStyles.guiskin"), typeof(GUISkin));
         }
 

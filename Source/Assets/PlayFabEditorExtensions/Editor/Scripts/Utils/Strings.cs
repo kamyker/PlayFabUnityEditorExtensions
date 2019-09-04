@@ -32,19 +32,19 @@ namespace PlayFab.PfEditor
             public static string BuildName(ApiCategory api) => PREFIX + api.ToString();
             public static string BuildPath(ApiCategory api) => Path.Combine("Packages", BuildName(api));
         }
-        //public static string PATH_EDEX_RESOURCES_RELATIVE
-        // => "Assets" + PATH_EDEX_RESOURCES.Replace(Application.dataPath, "");
+        public static string PATH_EDEX_RESOURCES_RELATIVE
+         => "Assets" + PATH_EDEX_RESOURCES.Replace(Application.dataPath, "");
 
-        //public static string PATH_EDEX_RESOURCES
-        //{
-        //    get
-        //    {
-        //        if (!Directory.Exists(pathEdexResources))
-        //            Directory.CreateDirectory(pathEdexResources);
-        //        return pathEdexResources;
-        //    }
-        //}
-        //private static readonly string pathEdexResources = Path.Combine(Application.dataPath, "Resources", "PlayFabEditorExtensions");
+        public static string PATH_EDEX_RESOURCES
+        {
+            get
+            {
+                if (!Directory.Exists(pathEdexResources))
+                    Directory.CreateDirectory(pathEdexResources);
+                return pathEdexResources;
+            }
+        }
+        private static readonly string pathEdexResources = Path.Combine(Application.dataPath, "Resources", "PlayFabEditorExtensions");
 
         //public static readonly string CLOUDSCRIPT_FILENAME = ".CloudScript.js";  //prefixed with a '.' to exclude this code from Unity's compiler
         //public static readonly string CLOUDSCRIPT_PATH = Path.Combine(PATH_EDEX_RESOURCES, CLOUDSCRIPT_FILENAME);

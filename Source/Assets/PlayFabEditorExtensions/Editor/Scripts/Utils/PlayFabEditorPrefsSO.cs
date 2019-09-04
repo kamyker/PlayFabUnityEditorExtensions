@@ -27,15 +27,9 @@ namespace PlayFab.PfEditor
                     return _instance;
 
                 _instance = CreateInstance<PlayFabEditorPrefsSO>();
-                if (!Directory.Exists(Path.Combine(Application.dataPath, "PlayFabEditorExtensions/Editor/Resources")))
-                    Directory.CreateDirectory(Path.Combine(Application.dataPath, "PlayFabEditorExtensions/Editor/Resources"));
+                var prefsSOPath = Path.Combine(Strings.PATH_EDEX_RESOURCES_RELATIVE, "PlayFabEditorPrefsSO.asset");
 
-                // TODO: we know the location of this file will be under  PlayFabEditorExtensions/Editor/ 
-                // just need to pull that files path, and append /Resrouces/ and boom you have the below path.
-                // consider moving this above the if directory exists so we can do the same logic beforehand.
-                Directory.GetFiles(Application.dataPath, "PlayFabEditor.cs");
-
-                AssetDatabase.CreateAsset(_instance, "Assets/PlayFabEditorExtensions/Editor/Resources/PlayFabEditorPrefsSO.asset");
+                AssetDatabase.CreateAsset(_instance, prefsSOPath);
                 AssetDatabase.SaveAssets();
                 Debug.LogWarning("Created missing PlayFabEditorPrefsSO file");
                 return _instance;
