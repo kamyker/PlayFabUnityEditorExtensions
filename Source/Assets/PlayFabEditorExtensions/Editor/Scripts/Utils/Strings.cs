@@ -16,7 +16,7 @@ namespace PlayFab.PfEditor
             {
                 string name = apiCategory.ToString();
                 if (apiCategory != ApiCategory.editorextensions)
-                    return MAIN + "PlayFabUnity" + char.ToUpper(name[3]) + name.Substring(4) + ".git";
+                    return MAIN + "PlayFabUnity" + char.ToUpper(name[0]) + name.Substring(1) + ".git";
                 else
                     return MAIN + "PlayFabUnityEditorExtensions.git";
 
