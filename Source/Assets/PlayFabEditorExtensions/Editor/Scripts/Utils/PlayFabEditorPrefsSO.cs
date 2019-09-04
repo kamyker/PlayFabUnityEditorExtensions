@@ -51,19 +51,17 @@ namespace PlayFab.PfEditor
         public readonly Dictionary<string, string> TitleDataCache = new Dictionary<string, string>();
         public readonly Dictionary<string, string> InternalTitleDataCache = new Dictionary<string, string>();
 
-        public string SdkPath;
-        public string EdExPath;
         public string LocalCloudScriptPath;
 
         private string _latestSdkVersion;
         private string _latestEdExVersion;
-        private DateTime _lastSdkVersionCheck;
-        private DateTime _lastEdExVersionCheck;
         public bool PanelIsShown;
-        public string EdSet_latestSdkVersion { get { return _latestSdkVersion; } set { _latestSdkVersion = value; _lastSdkVersionCheck = DateTime.UtcNow; } }
-        public string EdSet_latestEdExVersion { get { return _latestEdExVersion; } set { _latestEdExVersion = value; _lastEdExVersionCheck = DateTime.UtcNow; } }
-        public DateTime EdSet_lastSdkVersionCheck { get { return _lastSdkVersionCheck; } }
-        public DateTime EdSet_lastEdExVersionCheck { get { return _lastEdExVersionCheck; } }
+
+        public string EdSet_latestSdkVersion { get { return _latestSdkVersion; } set { _latestSdkVersion = value; EdSet_lastSdkVersionCheck = DateTime.UtcNow; } }
+        public string EdSet_latestEdExVersion { get { return _latestEdExVersion; } set { _latestEdExVersion = value; EdSet_lastEdExVersionCheck = DateTime.UtcNow; } }
+
+        public DateTime EdSet_lastSdkVersionCheck { get; private set; }
+        public DateTime EdSet_lastEdExVersionCheck { get; private set; }
 
         public int curMainMenuIdx;
         public int curSubMenuIdx;

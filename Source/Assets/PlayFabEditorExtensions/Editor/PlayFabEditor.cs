@@ -226,17 +226,14 @@ namespace PlayFab.PfEditor
                     GUILayout.FlexibleSpace();
                 }
 
-                if (!string.IsNullOrEmpty(PlayFabEditorHelper.EDEX_ROOT))
+                using (new UnityHorizontal())
                 {
-                    using (new UnityHorizontal())
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("UNINSTALL ", PlayFabEditorHelper.uiStyle.GetStyle("textButton")))
                     {
-                        GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("UNINSTALL ", PlayFabEditorHelper.uiStyle.GetStyle("textButton")))
-                        {
-                            RemoveEdEx();
-                        }
-                        GUILayout.FlexibleSpace();
+                        RemoveEdEx();
                     }
+                    GUILayout.FlexibleSpace();
                 }
             }
         }

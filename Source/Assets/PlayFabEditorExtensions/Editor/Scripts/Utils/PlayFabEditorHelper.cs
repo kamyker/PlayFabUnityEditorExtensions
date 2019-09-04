@@ -7,7 +7,6 @@ using PlayFab.PfEditor.Json;
 
 namespace PlayFab.PfEditor
 {
-    [InitializeOnLoad]
     public static partial class PlayFabEditorHelper
     {
         public static string GetApiVersion(ApiCategory apiCategory)
@@ -19,15 +18,12 @@ namespace PlayFab.PfEditor
             else
                 return null;
         }
+
         #region EDITOR_STRINGS
-        public static string EDEX_VERSION_TEMPLATE = "namespace PlayFab.PfEditor { public static partial class PlayFabEditorHelper { public static string EDEX_VERSION = \"{sdkVersion}\"; } }\n";
         public static string EDEX_NAME = "PlayFab_EditorExtensions";
-        public static string EDEX_ROOT = Application.dataPath + "/PlayFabEditorExtensions/Editor";
         public static string DEV_API_ENDPOINT = "https://editor.playfabapi.com";
         public static string TITLE_ENDPOINT = ".playfabapi.com";
         public static string GAMEMANAGER_URL = "https://developer.playfab.com";
-        public static string PLAYFAB_SETTINGS_TYPENAME = "PlayFabSettings";
-        public static string PLAYFAB_EDEX_MAINFILE = "PlayFabEditor.cs";
 
         public static string ADMIN_API = "ENABLE_PLAYFABADMIN_API";
         public static string CLIENT_API = "DISABLE_PLAYFABCLIENT_API";
@@ -48,7 +44,6 @@ namespace PlayFab.PfEditor
             { ENABLE_PLAYFABPUBSUB_API, new PfDefineFlag { Flag = ENABLE_PLAYFABPUBSUB_API, Label = "ENABLE PubSub", Category = PfDefineFlag.FlagCategory.Feature, isInverted = false, isSafe = false } },
         };
 
-        public static string DEFAULT_SDK_LOCATION = "Assets/PlayFabSdk";
         public static string STUDIO_OVERRIDE = "_OVERRIDE_";
 
         public static string MSG_SPIN_BLOCK = "{\"useSpinner\":true, \"blockUi\":true }";
@@ -63,54 +58,6 @@ namespace PlayFab.PfEditor
                     return _uiStyle;
                 _uiStyle = GetUiStyle();
                 return _uiStyle;
-            }
-        }
-
-        static PlayFabEditorHelper()
-        {
-            // scan for changes to the editor folder / structure.
-            if (uiStyle == null)
-            {
-                string[] rootFiles = new string[0];
-                bool relocatedEdEx = false;
-                _uiStyle = null;
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(PlayFabEditorPrefsSO.Instance.EdExPath))
-                        EDEX_ROOT = PlayFabEditorPrefsSO.Instance.EdExPath;
-                    rootFiles = Directory.GetDirectories(EDEX_ROOT);
-                }
-                catch
-                {
-
-                    if (rootFiles.Length == 0)
-                    {
-                        // this probably means the editor folder was moved.
-                        // see if we can locate the moved root and reload the assets
-
-                        var movedRootFiles = Directory.GetFiles(Application.dataPath, PLAYFAB_EDEX_MAINFILE, SearchOption.AllDirectories);
-                        if (movedRootFiles.Length > 0)
-                        {
-                            relocatedEdEx = true;
-                            EDEX_ROOT = movedRootFiles[0].Substring(0, movedRootFiles[0].LastIndexOf(PLAYFAB_EDEX_MAINFILE) - 1);
-                            PlayFabEditorPrefsSO.Instance.EdExPath = EDEX_ROOT;
-                            PlayFabEditorDataService.SaveEnvDetails();
-                        }
-                    }
-                }
-                finally
-                {
-                    if (relocatedEdEx && rootFiles.Length == 0)
-                    {
-                        Debug.Log("Found new EdEx root: " + EDEX_ROOT);
-                    }
-                    else if (rootFiles.Length == 0)
-                    {
-                        Debug.Log("Could not relocate the PlayFab Editor Extension");
-                        EDEX_ROOT = string.Empty;
-                    }
-                }
             }
         }
 
