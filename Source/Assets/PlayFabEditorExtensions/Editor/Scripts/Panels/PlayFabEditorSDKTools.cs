@@ -211,6 +211,8 @@ namespace PlayFab.PfEditor
         {
             AddRequest request = Client.
                 Add(Strings.GitUrls.Build(ApiCategory.sdk));
+            Client.Add(Strings.GitUrls.Build(ApiCategory.shared));
+
             EditorApplication.update += Progress;
 
             void Progress()
@@ -273,7 +275,6 @@ namespace PlayFab.PfEditor
         {
             if (EditorUtility.DisplayDialog("Confirm SDK Upgrade", "This action will remove the current PlayFab SDK and install the lastet version. Related plug-ins will need to be manually upgraded.", "Confirm", "Cancel"))
             {
-                RemoveSdk(false);
                 ImportLatestSDK();
             }
         }

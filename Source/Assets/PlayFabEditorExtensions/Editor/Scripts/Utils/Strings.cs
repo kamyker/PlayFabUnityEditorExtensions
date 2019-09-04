@@ -9,7 +9,7 @@ namespace PlayFab.PfEditor
         {
             private const string RAW = "https://raw.githubusercontent.com/kamyker/";
             public static readonly string EDEX_VERSION = RAW + "PlayFabUnityEditorExtensions/master/package.json";
-            public static readonly string SDK_VERSION = RAW + "PlayFabUnitySDKClient/master/package.json";
+            public static readonly string SDK_VERSION = RAW + "PlayFabUnitySDK/master/package.json";
 
             private const string MAIN = "https://github.com/kamyker/";
             public static string Build(ApiCategory apiCategory)
