@@ -75,12 +75,13 @@ namespace PlayFab.PfEditor
             }
 
             window = GetWindow<PlayFabEditor>(inspWndType);
+            window.Show();
             window.titleContent = new GUIContent("PlayFab EdEx");
             PlayFabEditorPrefsSO.Instance.PanelIsShown = true;
         }
 
         [InitializeOnLoad]
-        public class Startup
+        public static class Startup
         {
             static Startup()
             {
