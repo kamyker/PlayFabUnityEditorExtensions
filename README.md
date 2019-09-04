@@ -8,7 +8,8 @@ Read: [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/ma
   
   1. Open `<project_root>/Packages/manifest.json` and add
   ```
-  "com.playfab.editorextensions": "https://github.com/kamyker/PlayFabUnityEditorExtensions.git"
+  "com.playfab.editorextensions": "https://github.com/kamyker/PlayFabUnityEditorExtensions.git",
+  "com.playfab.shared": "https://github.com/kamyker/PlayFabUnityShared.git"
   ```
   to `dependencies`
   
