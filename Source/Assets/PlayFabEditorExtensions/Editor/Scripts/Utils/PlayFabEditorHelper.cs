@@ -28,12 +28,6 @@ namespace PlayFab.PfEditor
         public static string GAMEMANAGER_URL = "https://developer.playfab.com";
         public static string PLAYFAB_SETTINGS_TYPENAME = "PlayFabSettings";
         public static string PLAYFAB_EDEX_MAINFILE = "PlayFabEditor.cs";
-        public static string SDK_DOWNLOAD_PATH = "/Resources/PlayFabUnitySdk.unitypackage";
-        public static string EDEX_UPGRADE_PATH = "/Resources/PlayFabUnityEditorExtensions.unitypackage";
-        public static string EDEX_PACKAGES_PATH = "/Resources/MostRecentPackage.unitypackage";
-
-        public static string CLOUDSCRIPT_FILENAME = ".CloudScript.js";  //prefixed with a '.' to exclude this code from Unity's compiler
-        public static string CLOUDSCRIPT_PATH = EDEX_ROOT + "/Resources/" + CLOUDSCRIPT_FILENAME;
 
         public static string ADMIN_API = "ENABLE_PLAYFABADMIN_API";
         public static string CLIENT_API = "DISABLE_PLAYFABCLIENT_API";

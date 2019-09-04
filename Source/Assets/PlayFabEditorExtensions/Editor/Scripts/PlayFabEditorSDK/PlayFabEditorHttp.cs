@@ -28,40 +28,6 @@ namespace PlayFab.PfEditor
 
     public class PlayFabEditorHttp : UnityEditor.Editor
     {
-        internal static void MakeDownloadCall(string url, Action<string> resultCallback)
-        {
-#if UNITY_2018_2_OR_NEWER
-            UnityWebRequest www = UnityWebRequest.Get(url);
-            PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnHttpReq, url, PlayFabEditorHelper.MSG_SPIN_BLOCK);
-            EditorCoroutine.Start(PostDownload(www, (response) => { WriteResultFile(url, resultCallback, response); }, PlayFabEditorHelper.SharedErrorCallback), www);
-#else
-            var www = new WWW(url);
-            PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnHttpReq, url, PlayFabEditorHelper.MSG_SPIN_BLOCK);
-            EditorCoroutine.Start(PostDownload(www, (response) => { WriteResultFile(url, resultCallback, response); }, PlayFabEditorHelper.SharedErrorCallback), www);
-#endif
-        }
-
-        private static void WriteResultFile(string url, Action<string> resultCallback, byte[] response)
-        {
-            PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnHttpRes, url);
-
-            string fileName;
-            if (url.IndexOf("unity-edex") > -1)
-                fileName = PlayFabEditorHelper.EDEX_UPGRADE_PATH;
-            else if (url.IndexOf("unity-via-edex") > -1)
-                fileName = PlayFabEditorHelper.SDK_DOWNLOAD_PATH;
-            else
-                fileName = PlayFabEditorHelper.EDEX_PACKAGES_PATH;
-
-            var fileSaveLocation = PlayFabEditorHelper.EDEX_ROOT + fileName;
-            var fileSaveDirectory = Path.GetDirectoryName(fileSaveLocation);
-            Debug.Log("Saving " + response.Length + " bytes to: " + fileSaveLocation);
-            if (!Directory.Exists(fileSaveDirectory))
-                Directory.CreateDirectory(fileSaveDirectory);
-            File.WriteAllBytes(fileSaveLocation, response);
-            resultCallback(fileSaveLocation);
-        }
-
         internal static void MakeApiCall<TRequestType, TResultType>(string api, string apiEndpoint, TRequestType request, Action<TResultType> resultCallback, Action<EditorModels.PlayFabError> errorCallback) where TResultType : class
         {
             var url = apiEndpoint + api;

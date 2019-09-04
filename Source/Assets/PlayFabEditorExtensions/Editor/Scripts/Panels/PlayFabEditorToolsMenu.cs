@@ -43,7 +43,7 @@ namespace PlayFab.PfEditor
 
             if (File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath))
             {
-                var path = File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) ? PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath : PlayFabEditorHelper.CLOUDSCRIPT_PATH;
+                var path = File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) ? PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath : Strings.CLOUDSCRIPT_PATH;
                 var shortPath = "..." + path.Substring(path.LastIndexOf('/'));
 
                 using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
@@ -112,7 +112,7 @@ namespace PlayFab.PfEditor
             // empty request object gets latest versions
             PlayFabEditorApi.GetCloudScriptRevision(new EditorModels.GetCloudScriptRevisionRequest(), (GetCloudScriptRevisionResult result) =>
             {
-                var csPath = PlayFabEditorHelper.CLOUDSCRIPT_PATH;
+                var csPath = Strings.CLOUDSCRIPT_PATH;
                 var location = Path.GetDirectoryName(csPath);
                 try
                 {
@@ -150,9 +150,9 @@ namespace PlayFab.PfEditor
 
         private static void BeginCloudScriptUpload()
         {
-            var filePath = File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) ? PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath : PlayFabEditorHelper.CLOUDSCRIPT_PATH;
+            var filePath = File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) ? PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath : Strings.CLOUDSCRIPT_PATH;
 
-            if (!File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) && !File.Exists(PlayFabEditorHelper.CLOUDSCRIPT_PATH))
+            if (!File.Exists(PlayFabEditorPrefsSO.Instance.LocalCloudScriptPath) && !File.Exists(Strings.CLOUDSCRIPT_PATH))
             {
                 PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnError, "Cloud Script Upload Failed: null or corrupt file at path(" + filePath + ").");
                 return;
@@ -166,7 +166,7 @@ namespace PlayFab.PfEditor
             request.Publish = EditorUtility.DisplayDialog("Deployment Options", "Do you want to make this Cloud Script live after uploading?", "Yes", "No");
             request.Files = new List<CloudScriptFile>(){
                 new CloudScriptFile() {
-                    Filename = PlayFabEditorHelper.CLOUDSCRIPT_FILENAME,
+                    Filename = Strings.CLOUDSCRIPT_FILENAME,
                     FileContents = contents
                 }
             };
