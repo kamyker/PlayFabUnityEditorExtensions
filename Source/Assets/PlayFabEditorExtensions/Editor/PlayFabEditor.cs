@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace PlayFab.PfEditor
 {
@@ -356,17 +357,24 @@ namespace PlayFab.PfEditor
             return false;
         }
 
-        private static void GetLatestEdExVersion()
+        private async static void GetLatestEdExVersion()
         {
-            var threshold = PlayFabEditorPrefsSO.Instance.EdSet_lastEdExVersionCheck != DateTime.MinValue ? PlayFabEditorPrefsSO.Instance.EdSet_lastEdExVersionCheck.AddHours(1) : DateTime.MinValue;
+            var threshold = PlayFabEditorPrefsSO.Instance.EdSet_lastSdkVersionCheck != DateTime.MinValue ? PlayFabEditorPrefsSO.Instance.EdSet_lastSdkVersionCheck.AddHours(1) : DateTime.MinValue;
 
             if (DateTime.Today > threshold)
             {
-                PlayFabEditorHttp.MakeGitHubApiCall("https://api.github.com/repos/PlayFab/UnityEditorExtensions/git/refs/tags", (version) =>
+                var www = await UnityWebRequest.Get(Strings.GitUrls.EDEX_VERSION).SendWebRequest();
+
+                if (!www.isHttpError || !www.isNetworkError)
                 {
+                    var dict = Json.PlayFabSimpleJson.DeserializeObject<Dictionary<string, string>>(www.downloadHandler.text);
+                    dict.TryGetValue("version", out string version);
+                    Debug.Log($"Remote PlayFab EdEx version: {version}");
                     latestEdExVersion = version ?? "Unknown";
                     PlayFabEditorPrefsSO.Instance.EdSet_latestEdExVersion = latestEdExVersion;
-                });
+                }
+                else
+                    Debug.Log(www.error);
             }
             else
             {
@@ -398,17 +406,9 @@ namespace PlayFab.PfEditor
             if (prompt && !EditorUtility.DisplayDialog("Confirm Editor Extensions Removal", "This action will remove PlayFab Editor Extensions from the current project.", "Confirm", "Cancel"))
                 return;
 
-            try
-            {
-                window.Close();
-                var edExRoot = new DirectoryInfo(PlayFabEditorHelper.EDEX_ROOT);
-                FileUtil.DeleteFileOrDirectory(edExRoot.Parent.FullName);
-                AssetDatabase.Refresh();
-            }
-            catch (Exception ex)
-            {
-                RaiseStateUpdate(EdExStates.OnError, ex.Message);
-            }
+            UnityEditor.PackageManager.Client.Remove(Strings.Package.BuildName(ApiCategory.editorextensions));
+            window.Close();
+            //TODO wait for finish and log
         }
 
         private static void UpgradeEdEx()
@@ -416,17 +416,9 @@ namespace PlayFab.PfEditor
             if (EditorUtility.DisplayDialog("Confirm EdEx Upgrade", "This action will remove the current PlayFab Editor Extensions and install the lastet version.", "Confirm", "Cancel"))
             {
                 window.Close();
-                ImportLatestEdEx();
+                UnityEditor.PackageManager.Client.Add(Strings.GitUrls.Build(ApiCategory.editorextensions));
+                //TODO wait for finish and log
             }
-        }
-
-        private static void ImportLatestEdEx()
-        {
-            PlayFabEditorHttp.MakeDownloadCall("https://api.playfab.com/sdks/download/unity-edex-upgrade", (fileName) =>
-            {
-                AssetDatabase.ImportPackage(fileName, false);
-                Debug.Log("PlayFab EdEx Upgrade: Complete");
-            });
         }
         #endregion
     }

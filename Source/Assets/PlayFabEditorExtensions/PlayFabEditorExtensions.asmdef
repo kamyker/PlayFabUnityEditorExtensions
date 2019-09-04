@@ -1,7 +1,7 @@
 {
     "name": "PlayFabEditorExtensions",
     "references": [
-        "com.playfab.sdkshared"
+        "PlayFabShared"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

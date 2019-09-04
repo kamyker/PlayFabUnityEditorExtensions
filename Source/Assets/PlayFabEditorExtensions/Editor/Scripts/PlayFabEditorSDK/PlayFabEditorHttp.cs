@@ -6,9 +6,26 @@ using System.IO;
 using PlayFab.PfEditor.Json;
 using PlayFab.PfEditor.EditorModels;
 using UnityEngine.Networking;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace PlayFab.PfEditor
 {
+    public static class Extensions
+    {
+        public static TaskAwaiter<UnityWebRequest> GetAwaiter(this UnityWebRequestAsyncOperation asyncOp)
+        {
+            var tcs = new TaskCompletionSource<UnityWebRequest>();
+            asyncOp.completed += AsyncOp_completed;
+
+            void AsyncOp_completed(AsyncOperation obj)
+            {
+                tcs.SetResult(asyncOp.webRequest);
+            }
+            return tcs.Task.GetAwaiter();
+        }
+    }
+
     public class PlayFabEditorHttp : UnityEditor.Editor
     {
         internal static void MakeDownloadCall(string url, Action<string> resultCallback)

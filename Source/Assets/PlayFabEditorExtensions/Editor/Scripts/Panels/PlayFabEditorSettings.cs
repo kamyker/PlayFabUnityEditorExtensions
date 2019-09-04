@@ -10,6 +10,7 @@ namespace PlayFab.PfEditor
     [InitializeOnLoad]
     public class PlayFabEditorSettings : UnityEditor.Editor
     {
+        private static PlayFabSharedSettings SharedSettings => PlayFabEditorSDKTools.PlayFabSettings;
         #region panel variables
         public enum SubMenuStates
         {
@@ -18,14 +19,6 @@ namespace PlayFab.PfEditor
             ApiSettings,
         }
 
-        public enum WebRequestType
-        {
-            UnityWww, // High compatability Unity api calls
-            HttpWebRequest, // High performance multi-threaded api calls
-#if UNITY_2017_2_OR_NEWER
-            UnityWebRequest, // Modern unity HTTP component
-#endif
-        }
 
         private static float LABEL_WIDTH = 180;
 
@@ -227,13 +220,13 @@ namespace PlayFab.PfEditor
 
             using (new UnityVertical(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleGray1"), GUILayout.ExpandWidth(true)))
             {
-                var studio = GetStudioForTitleId(PlayFabEditorDataService.SharedSettings.TitleId);
+                var studio = GetStudioForTitleId(SharedSettings.TitleId);
                 if (string.IsNullOrEmpty(studio.Id))
                     using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
                         EditorGUILayout.LabelField("You are using a TitleId to which you are not a member. A title administrator can approve access for your account.", PlayFabEditorHelper.uiStyle.GetStyle("orTxt"));
 
                 PlayFabGuiFieldHelper.SuperFancyDropdown(labelWidth, "STUDIO: ", studio, PlayFabEditorPrefsSO.Instance.StudioList, eachStudio => eachStudio.Name, OnStudioChange, PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear"));
-                studio = GetStudioForTitleId(PlayFabEditorDataService.SharedSettings.TitleId); // This might have changed above, so refresh it
+                studio = GetStudioForTitleId(SharedSettings.TitleId); // This might have changed above, so refresh it
 
                 if (string.IsNullOrEmpty(studio.Id))
                 {
@@ -242,14 +235,14 @@ namespace PlayFab.PfEditor
                     {
                         EditorGUILayout.LabelField("TITLE ID: ", PlayFabEditorHelper.uiStyle.GetStyle("labelStyle"), GUILayout.Width(labelWidth));
 
-                        var newTitleId = EditorGUILayout.TextField(PlayFabEditorDataService.SharedSettings.TitleId, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
-                        if (newTitleId != PlayFabEditorDataService.SharedSettings.TitleId)
+                        var newTitleId = EditorGUILayout.TextField(SharedSettings.TitleId, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
+                        if (newTitleId != SharedSettings.TitleId)
                             OnTitleIdChange(newTitleId);
                     }
                 }
                 else
                 {
-                    PlayFabGuiFieldHelper.SuperFancyDropdown(labelWidth, "TITLE ID: ", studio.GetTitle(PlayFabEditorDataService.SharedSettings.TitleId), studio.Titles, GetTitleDisplayString, OnTitleChange, PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear"));
+                    PlayFabGuiFieldHelper.SuperFancyDropdown(labelWidth, "TITLE ID: ", studio.GetTitle(SharedSettings.TitleId), studio.Titles, GetTitleDisplayString, OnTitleChange, PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear"));
                 }
 
                 DrawPfSharedSettingsOptions(labelWidth);
@@ -265,44 +258,44 @@ namespace PlayFab.PfEditor
         {
 #if ENABLE_PLAYFABADMIN_API || ENABLE_PLAYFABSERVER_API || UNITY_EDITOR
             // Set the title secret key, if we're using the dropdown
-            var studio = GetStudioForTitleId(PlayFabEditorDataService.SharedSettings.TitleId);
-            var correctKey = studio.GetTitleSecretKey(PlayFabEditorDataService.SharedSettings.TitleId);
+            var studio = GetStudioForTitleId(SharedSettings.TitleId);
+            var correctKey = studio.GetTitleSecretKey(SharedSettings.TitleId);
             var setKey = !string.IsNullOrEmpty(studio.Id) && !string.IsNullOrEmpty(correctKey);
             if (setKey)
-                PlayFabEditorDataService.SharedSettings.DeveloperSecretKey = correctKey;
+                SharedSettings.DeveloperSecretKey = correctKey;
 
             using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
             {
                 EditorGUILayout.LabelField("DEVELOPER SECRET KEY: ", PlayFabEditorHelper.uiStyle.GetStyle("labelStyle"), GUILayout.Width(labelWidth));
                 using (new UnityGuiToggler(!setKey))
-                    PlayFabEditorDataService.SharedSettings.DeveloperSecretKey = EditorGUILayout.TextField(PlayFabEditorDataService.SharedSettings.DeveloperSecretKey, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
+                    SharedSettings.DeveloperSecretKey = EditorGUILayout.TextField(SharedSettings.DeveloperSecretKey, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
             }
 #endif
             using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
             {
                 EditorGUILayout.LabelField("REQUEST TYPE: ", PlayFabEditorHelper.uiStyle.GetStyle("labelStyle"), GUILayout.MaxWidth(labelWidth));
-                PlayFabEditorDataService.SharedSettings.WebRequestType = (WebRequestType)EditorGUILayout.EnumPopup(PlayFabEditorDataService.SharedSettings.WebRequestType, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.Height(25));
+                SharedSettings.RequestType = (WebRequestType)EditorGUILayout.EnumPopup(SharedSettings.RequestType, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.Height(25));
             }
 
-            if (PlayFabEditorDataService.SharedSettings.WebRequestType == WebRequestType.HttpWebRequest)
+            if (SharedSettings.RequestType == WebRequestType.HttpWebRequest)
             {
                 using (var fwl = new FixedWidthLabel(new GUIContent("REQUEST TIMEOUT: "), PlayFabEditorHelper.uiStyle.GetStyle("labelStyle")))
                 {
                     GUILayout.Space(labelWidth - fwl.fieldWidth);
-                    PlayFabEditorDataService.SharedSettings.TimeOut = EditorGUILayout.IntField(PlayFabEditorDataService.SharedSettings.TimeOut, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
+                    SharedSettings.RequestTimeout = EditorGUILayout.IntField(SharedSettings.RequestTimeout, PlayFabEditorHelper.uiStyle.GetStyle("TextField"), GUILayout.MinHeight(25));
                 }
 
                 using (var fwl = new FixedWidthLabel(new GUIContent("KEEP ALIVE: "), PlayFabEditorHelper.uiStyle.GetStyle("labelStyle")))
                 {
                     GUILayout.Space(labelWidth - fwl.fieldWidth);
-                    PlayFabEditorDataService.SharedSettings.KeepAlive = EditorGUILayout.Toggle(PlayFabEditorDataService.SharedSettings.KeepAlive, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
+                    SharedSettings.RequestKeepAlive = EditorGUILayout.Toggle(SharedSettings.RequestKeepAlive, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
                 }
             }
 
             using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
             {
                 EditorGUILayout.LabelField("COMPRESS API DATA: ", PlayFabEditorHelper.uiStyle.GetStyle("labelStyle"), GUILayout.MaxWidth(labelWidth));
-                PlayFabEditorDataService.SharedSettings.CompressApiData = EditorGUILayout.Toggle(PlayFabEditorDataService.SharedSettings.CompressApiData, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
+                SharedSettings.CompressApiData = EditorGUILayout.Toggle(SharedSettings.CompressApiData, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
             }
         }
         #endregion
@@ -349,9 +342,9 @@ namespace PlayFab.PfEditor
         {
             var studio = GetStudioForTitleId(newTitleId);
             PlayFabEditorPrefsSO.Instance.SelectedStudio = studio.Name;
-            PlayFabEditorDataService.SharedSettings.TitleId = newTitleId;
+            SharedSettings.TitleId = newTitleId;
 #if ENABLE_PLAYFABADMIN_API || ENABLE_PLAYFABSERVER_API || UNITY_EDITOR
-            PlayFabEditorDataService.SharedSettings.DeveloperSecretKey = studio.GetTitleSecretKey(newTitleId);
+            SharedSettings.DeveloperSecretKey = studio.GetTitleSecretKey(newTitleId);
 #endif
             PlayFabEditorPrefsSO.Instance.TitleDataCache.Clear();
             if (PlayFabEditorDataMenu.tdViewer != null)

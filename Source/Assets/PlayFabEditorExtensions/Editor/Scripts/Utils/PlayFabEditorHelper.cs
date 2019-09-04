@@ -10,6 +10,15 @@ namespace PlayFab.PfEditor
     [InitializeOnLoad]
     public static partial class PlayFabEditorHelper
     {
+        public static string GetApiVersion(ApiCategory apiCategory)
+        {
+            var packageJson = (TextAsset)AssetDatabase.LoadAssetAtPath(Path.Combine(Strings.Package.BuildPath(apiCategory), "package.json"),
+                typeof(TextAsset));
+            if (packageJson != null)
+                return PlayFabSimpleJson.DeserializeObject<Dictionary<string, string>>(packageJson.text)["version"];
+            else
+                return null;
+        }
         #region EDITOR_STRINGS
         public static string EDEX_VERSION_TEMPLATE = "namespace PlayFab.PfEditor { public static partial class PlayFabEditorHelper { public static string EDEX_VERSION = \"{sdkVersion}\"; } }\n";
         public static string EDEX_NAME = "PlayFab_EditorExtensions";
@@ -113,14 +122,9 @@ namespace PlayFab.PfEditor
 
         private static GUISkin GetUiStyle()
         {
-            var searchRootAssetFolder = Application.dataPath;
-            var pfGuiPaths = Directory.GetFiles(searchRootAssetFolder, "PlayFabStyles.guiskin", SearchOption.AllDirectories);
-            foreach (var eachPath in pfGuiPaths)
-            {
-                var loadPath = eachPath.Substring(eachPath.LastIndexOf("Assets"));
-                return (GUISkin)AssetDatabase.LoadAssetAtPath(loadPath, typeof(GUISkin));
-            }
-            return null;
+            Debug.Log("Packages\\PlayFabUnityEditorExtensions\\Source\\Assets\\PlayFabEditorExtensions\\Editor\\UI\\PlayFabStyles.guiskin");
+            Debug.Log($"{Path.Combine(Strings.PATH_UI, "PlayFabStyles.guiskin")}");
+            return (GUISkin)AssetDatabase.LoadAssetAtPath(Path.Combine(Strings.PATH_UI, "PlayFabStyles.guiskin"), typeof(GUISkin));
         }
 
         public static void SharedErrorCallback(EditorModels.PlayFabError error)
