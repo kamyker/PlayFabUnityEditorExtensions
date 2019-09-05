@@ -43,6 +43,7 @@ namespace PlayFab.PfEditor
                 EdExStateUpdate += StateUpdateHandler;
             }
 
+            PlayFabEditorPrefsSO.Instance.PanelIsShown = true;
             PlayFabEditorDataService.RefreshStudiosList(true);
             GetLatestEdExVersion();
         }
@@ -61,6 +62,11 @@ namespace PlayFab.PfEditor
         void OnFocus()
         {
             OnEnable();
+        }
+
+        void OnLostFocus()
+        {
+            OnDisable();
         }
 
         [MenuItem("Window/PlayFab/Editor Extensions")]

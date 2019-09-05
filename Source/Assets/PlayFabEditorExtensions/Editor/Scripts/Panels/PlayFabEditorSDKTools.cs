@@ -13,7 +13,16 @@ namespace PlayFab.PfEditor
     public class PlayFabEditorSDKTools : UnityEditor.Editor
     {
         private const int buttonWidth = 150;
-        public static bool IsInstalled = false;
+        public static bool? isInstalled = null;
+        public static bool IsInstalled
+        {
+            get
+            {
+                if (isInstalled == null)
+                    CheckIfInstalledAndVersion();
+                return (bool)isInstalled;
+            }
+        }
 
         private static string installedSdkVersion = string.Empty;
         private static string latestSdkVersion = string.Empty;
@@ -237,7 +246,7 @@ namespace PlayFab.PfEditor
         {
             installedSdkVersion = PlayFabEditorHelper.GetApiVersion(ApiCategory.sdk);
             Debug.Log($"installedSdkVersion: {installedSdkVersion}");
-            IsInstalled = installedSdkVersion != null;
+            isInstalled = installedSdkVersion != null;
         }
 
         private static UnityEngine.Object FindSdkAsset()
@@ -308,7 +317,7 @@ namespace PlayFab.PfEditor
                     {
                         PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnSuccess, "PlayFab SDK Removed!");
                         installedSdkVersion = null;
-                        IsInstalled = false;
+                        isInstalled = false;
                     }
                     else if (request.Status >= StatusCode.Failure)
                         PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnError,
