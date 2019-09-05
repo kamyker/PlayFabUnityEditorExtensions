@@ -18,6 +18,7 @@ Read: [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/ma
   2. Follow [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/master/README.md) from step 2.
 
 This is how project looks like with this fork:
+
 ![project](_repoAssets/img/EdEx_Project.png?raw=true "Title")
 
 # Features
