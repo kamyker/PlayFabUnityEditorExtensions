@@ -40,7 +40,7 @@ You get:
 ```
 try
 {
-    await ClientAPI.LoginWithCustomID("144", true, "GettingStartedGuide");
+    var result = await ClientAPI.LoginWithCustomID("144", true, "GettingStartedGuide");
     //success
 }
 catch(PlayFabError e)
