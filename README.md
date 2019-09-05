@@ -4,6 +4,8 @@
 
 Read: [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/master/README.md)
 
+⚠️ Warning - this is my custom version of official sdk, some functions may not work correctly.
+
 ## Setup:
   
   1. Open `<project_root>/Packages/manifest.json` and add
@@ -50,4 +52,4 @@ catch(PlayFabError e)
 No recompilation of PlayFabSDK
 
 ## Package Manager
-Simplyfies how sdks are installed, upgraded and managed. Makes it really easy to make plugind for playfab.
+Simplyfies how sdks are installed, upgraded and managed. Makes it really easy to make plugins for playfab.
