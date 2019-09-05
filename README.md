@@ -1,6 +1,6 @@
 # PlayFab Unity Editor Extensions
 
-## Fork with Package Manager and Assembly Definitions support
+## Fork with Package Manager, Assembly Definitions, async/await support
 
 Read: [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/master/README.md)
 
@@ -16,5 +16,37 @@ Read: [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/ma
   2. Follow [Original README](https://github.com/PlayFab/UnityEditorExtensions/blob/master/README.md) from step 2.
 
 This is how project looks like with this fork:
+# Features
+## Async/Await and simpler syntax
+Example from  [playfab-unity-getting-started](https://api.playfab.com/docs/getting-started/unity-getting-started) instead of writing this code:
+```
+var request = new LoginWithCustomIDRequest { CustomId = "GettingStartedGuide", CreateAccount = true};
+PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
 
+private void OnLoginSuccess(LoginResult result)
+{
+}
+
+private void OnLoginFailure(PlayFabError error)
+{
+    Debug.LogError(error.GenerateErrorReport());
+}
+```
+You get:
+```
+try
+{
+    await ClientAPI.LoginWithCustomID("144", true, "GettingStartedGuide");
+    //success
+}
+catch(PlayFabError e)
+{
+    Debug.LogError(e.Message);
+}
+```
+## Assembly Definitions
+No recompilation of PlayFabSDK
+
+## Package Manager
+Simplyfies how sdks are installed, upgraded and managed. Makes it really easy to make plugind for playfab.
 ![project](_repoAssets/img/EdEx_Project.png?raw=true "Title")
