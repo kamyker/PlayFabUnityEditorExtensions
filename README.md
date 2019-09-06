@@ -66,7 +66,7 @@ This is similar to:
 Task.Run(async () => 
 try
 {
-    await EventsAPI.WriteEvents(some_events).FireForgetLog();
+    await EventsAPI.WriteEvents(some_events);
 }
 catch(Exception e)
 {
