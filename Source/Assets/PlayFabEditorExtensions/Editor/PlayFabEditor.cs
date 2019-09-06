@@ -194,7 +194,7 @@ namespace PlayFab.PfEditor
                 using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
                 {
                     GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField("PlayFab Editor Extensions: " + PlayFabEditorHelper.EDEX_VERSION, PlayFabEditorHelper.uiStyle.GetStyle("versionText"));
+                    EditorGUILayout.LabelField("PlayFab Editor Extensions: " + PlayFabEditorHelper.GetApiVersion(ApiCategory.editorextensions), PlayFabEditorHelper.uiStyle.GetStyle("versionText"));
                     GUILayout.FlexibleSpace();
                 }
 
@@ -217,7 +217,7 @@ namespace PlayFab.PfEditor
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("VIEW DOCUMENTATION", PlayFabEditorHelper.uiStyle.GetStyle("textButton")))
                     {
-                        Application.OpenURL("https://github.com/PlayFab/UnityEditorExtensions");
+                        Application.OpenURL(Strings.GitUrls.Build(ApiCategory.editorextensions).Replace(".git", ""));
                     }
                     GUILayout.FlexibleSpace();
                 }
@@ -227,7 +227,7 @@ namespace PlayFab.PfEditor
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("REPORT ISSUES", PlayFabEditorHelper.uiStyle.GetStyle("textButton")))
                     {
-                        Application.OpenURL("https://github.com/PlayFab/UnityEditorExtensions/issues");
+                        Application.OpenURL(Strings.GitUrls.Build(ApiCategory.editorextensions).Replace(".git", "") + "/issues");
                     }
                     GUILayout.FlexibleSpace();
                 }
@@ -373,7 +373,7 @@ namespace PlayFab.PfEditor
                 {
                     var dict = Json.PlayFabSimpleJson.DeserializeObject<Dictionary<string, string>>(www.downloadHandler.text);
                     dict.TryGetValue("version", out string version);
-                    Debug.Log($"Remote PlayFab EdEx version: {version}");
+                    //Debug.Log($"Remote PlayFab EdEx version: {version}");
                     latestEdExVersion = version ?? "Unknown";
                     PlayFabEditorPrefsSO.Instance.EdSet_latestEdExVersion = latestEdExVersion;
                 }
@@ -390,11 +390,11 @@ namespace PlayFab.PfEditor
         {
             if (string.IsNullOrEmpty(latestEdExVersion) || latestEdExVersion == "Unknown")
                 return false;
-
-            if (string.IsNullOrEmpty(PlayFabEditorHelper.EDEX_VERSION) || PlayFabEditorHelper.EDEX_VERSION == "Unknown")
+            var edexVer = PlayFabEditorHelper.GetApiVersion(ApiCategory.editorextensions);
+            if (string.IsNullOrEmpty(edexVer) || edexVer == "Unknown")
                 return true;
 
-            string[] currrent = PlayFabEditorHelper.EDEX_VERSION.Split('.');
+            string[] currrent = edexVer.Split('.');
             if (currrent.Length != 3)
                 return true;
 

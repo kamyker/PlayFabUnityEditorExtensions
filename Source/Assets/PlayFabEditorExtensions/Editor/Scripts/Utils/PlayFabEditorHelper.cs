@@ -20,7 +20,7 @@ namespace PlayFab.PfEditor
         }
 
         #region EDITOR_STRINGS
-        public static string EDEX_NAME = "PlayFab_EditorExtensions";
+        public static string EDEX_NAME = "PlayFab_EditorExtensions_PackageManager";
         public static string DEV_API_ENDPOINT = "https://editor.playfabapi.com";
         public static string TITLE_ENDPOINT = ".playfabapi.com";
         public static string GAMEMANAGER_URL = "https://developer.playfab.com";

@@ -253,7 +253,7 @@ namespace PlayFab.PfEditor
             PlayFabEditorApi.RegisterAccount(new RegisterAccountRequest()
             {
                 DeveloperToolProductName = PlayFabEditorHelper.EDEX_NAME,
-                DeveloperToolProductVersion = PlayFabEditorHelper.EDEX_VERSION,
+                DeveloperToolProductVersion = PlayFabEditorHelper.GetApiVersion(ApiCategory.editorextensions),
                 Email = _userEmail,
                 Password = _userPass,
                 StudioName = _studio
@@ -275,7 +275,7 @@ namespace PlayFab.PfEditor
             PlayFabEditorApi.Login(new LoginRequest()
             {
                 DeveloperToolProductName = PlayFabEditorHelper.EDEX_NAME,
-                DeveloperToolProductVersion = PlayFabEditorHelper.EDEX_VERSION,
+                DeveloperToolProductVersion = PlayFabEditorHelper.GetApiVersion(ApiCategory.editorextensions),
                 Email = _userEmail,
                 Password = _userPass
             }, (result) =>
@@ -307,7 +307,7 @@ namespace PlayFab.PfEditor
             PlayFabEditorApi.Login(new LoginRequest()
             {
                 DeveloperToolProductName = PlayFabEditorHelper.EDEX_NAME,
-                DeveloperToolProductVersion = PlayFabEditorHelper.EDEX_VERSION,
+                DeveloperToolProductVersion = PlayFabEditorHelper.GetApiVersion(ApiCategory.editorextensions),
                 TwoFactorAuth = _2FaCode,
                 Email = _userEmail,
                 Password = _userPass
