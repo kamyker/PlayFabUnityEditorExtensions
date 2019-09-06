@@ -245,7 +245,7 @@ namespace PlayFab.PfEditor
         public static void CheckIfInstalledAndVersion()
         {
             installedSdkVersion = PlayFabEditorHelper.GetApiVersion(ApiCategory.sdk);
-            Debug.Log($"installedSdkVersion: {installedSdkVersion}");
+            //Debug.Log($"installedSdkVersion: {installedSdkVersion}");
             isInstalled = installedSdkVersion != null;
         }
 
@@ -340,7 +340,7 @@ namespace PlayFab.PfEditor
                 {
                     var dict = Json.PlayFabSimpleJson.DeserializeObject<Dictionary<string, string>>(www.downloadHandler.text);
                     dict.TryGetValue("version", out string version);
-                    Debug.Log($"Remote PlayFab version: {version}");
+                    //Debug.Log($"Remote PlayFab version: {version}");
                     latestSdkVersion = version ?? "Unknown";
                     PlayFabEditorPrefsSO.Instance.EdSet_latestSdkVersion = latestSdkVersion;
                 }
