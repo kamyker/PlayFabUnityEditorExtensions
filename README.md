@@ -54,3 +54,24 @@ No recompilation of PlayFabSDK
 
 ## Package Manager
 Simplyfies how sdks are installed, upgraded and managed. Makes it really easy to make plugins for playfab.
+
+# Tips
+## Fire Forge
+To run any api call without awaiting it (for example logging events) use included FireForgetLog extension method:
+```
+EventsAPI.WriteEvents(some_events).FireForgetLog();
+```
+This is similar to:
+```
+Task.Run(async () => 
+try
+{
+    await EventsAPI.WriteEvents(some_events).FireForgetLog();
+}
+catch(Exception e)
+{
+    Debug.LogException(e);
+});
+```
+## Other
+Avoid using `async void` methods and instead use `async Task` and run it with method above.
