@@ -53,7 +53,7 @@ namespace PlayFab.PfEditor
         //        //end the vertical container
         //    }
 
-        //    ProgressBar.Draw();
+        //ProgressBar.Draw();
 
         //}
 

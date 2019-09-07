@@ -103,26 +103,23 @@ namespace PlayFab.PfEditor
 
         public static void DrawSettingsPanel()
         {
-            if (_menu != null)
-            {
-                _menu.DrawMenu();
-                switch ((SubMenuStates)PlayFabEditorPrefsSO.Instance.curSubMenuIdx)
-                {
-                    case SubMenuStates.StandardSettings:
-                        DrawStandardSettingsSubPanel();
-                        break;
-                    case SubMenuStates.ApiSettings:
-                        DrawApiSubPanel();
-                        break;
-                    case SubMenuStates.TitleSettings:
-                        DrawTitleSettingsSubPanel();
-                        break;
-                }
-            }
-            else
-            {
+            if (_menu == null)
                 RegisterMenu();
+
+            _menu.DrawMenu();
+            switch ((SubMenuStates)PlayFabEditorPrefsSO.Instance.curSubMenuIdx)
+            {
+                case SubMenuStates.StandardSettings:
+                    DrawStandardSettingsSubPanel();
+                    break;
+                case SubMenuStates.ApiSettings:
+                    DrawApiSubPanel();
+                    break;
+                case SubMenuStates.TitleSettings:
+                    DrawTitleSettingsSubPanel();
+                    break;
             }
+
         }
 
         private static void DrawTitleSettingsSubPanel()

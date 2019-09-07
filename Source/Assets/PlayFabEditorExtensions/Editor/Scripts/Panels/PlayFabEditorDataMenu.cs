@@ -23,10 +23,7 @@ namespace PlayFab.PfEditor
         public static void DrawDataPanel()
         {
             if (menu == null)
-            {
                 RegisterMenu();
-                return;
-            }
 
             menu.DrawMenu();
             switch ((DataMenuStates)PlayFabEditorPrefsSO.Instance.curSubMenuIdx)
@@ -67,19 +64,13 @@ namespace PlayFab.PfEditor
         static PlayFabEditorDataMenu()
         {
             if (!PlayFabEditor.IsEventHandlerRegistered(StateUpdateHandler))
-            {
                 PlayFabEditor.EdExStateUpdate += StateUpdateHandler;
-            }
-
-            RegisterMenu();
         }
 
         public void OnDestroy()
         {
             if (PlayFabEditor.IsEventHandlerRegistered(StateUpdateHandler))
-            {
                 PlayFabEditor.EdExStateUpdate -= StateUpdateHandler;
-            }
         }
         #endregion
 
