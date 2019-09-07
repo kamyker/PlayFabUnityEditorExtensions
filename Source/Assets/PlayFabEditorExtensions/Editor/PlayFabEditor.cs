@@ -5,14 +5,12 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 namespace PlayFab.PfEditor
 {
-    public class PlayFabEditor : UnityEditor.EditorWindow
+    public class PlayFabEditor : EditorWindow
     {
-#if !UNITY_5_3_OR_NEWER
-        public GUIContent titleContent;
-#endif
 
         #region EdEx Variables
         // vars for the plugin-wide event system
@@ -29,7 +27,10 @@ namespace PlayFab.PfEditor
         internal static PlayFabEditor window;
         #endregion
 
+        private VisualElement root;
+
         #region unity lopps & methods
+
         void OnEnable()
         {
             if (window == null)
@@ -46,7 +47,27 @@ namespace PlayFab.PfEditor
             PlayFabEditorPrefsSO.Instance.PanelIsShown = true;
             PlayFabEditorDataService.RefreshStudiosList(true);
             GetLatestEdExVersion();
+
+            root = rootVisualElement;
+            root.Clear();
+
+            rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(Strings.PATH_UI, "styles.uss")));
+            var template = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(Path.Combine(Strings.PATH_UI, "mainView.uxml"));
+            template.CloneTree(root);
+
+            //root.Query<IMGUIContainer>("header").First().onGUIHandler = () => PlayFabEditorHeader.DrawHeader();
+            root.Query<IMGUIContainer>("mainIMGUI").First().onGUIHandler = OnGuiInternal;
+            root.Query<Button>("gameManager").ForEach(btn
+                => btn.clickable.clicked += PlayFabEditorHeader.OnDashbaordClicked);
+            //root.Query<Image>().ForEach(img =>
+            //{
+            //    img.image = AssetDatabase.LoadAssetAtPath<Texture>(Strings.PATH_UI_IMG(img.name));
+            //    img.scaleMode = ScaleMode.ScaleToFit;
+            //});
+            //imguiContainer.AddToClassList("classExample");
+            //root.Add(imguiContainer);
         }
+
 
         void OnDisable()
         {
@@ -107,10 +128,10 @@ namespace PlayFab.PfEditor
             }
         }
 
-        private void OnGUI()
-        {
-            HideRepaintErrors(OnGuiInternal);
-        }
+        //private void OnGUI()
+        //{
+        //    HideRepaintErrors(OnGuiInternal);
+        //}
 
         private void OnGuiInternal()
         {
@@ -119,7 +140,7 @@ namespace PlayFab.PfEditor
             using (new UnityVertical())
             {
                 //Run all updaters prior to drawing;
-                PlayFabEditorHeader.DrawHeader();
+                //PlayFabEditorHeader.DrawHeader();
 
                 GUI.enabled = blockingRequests.Count == 0 && !EditorApplication.isCompiling;
 

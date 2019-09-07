@@ -25,6 +25,7 @@ namespace PlayFab.PfEditor
 
         public static readonly string PATH_MAIN = Path.Combine("Packages", "com.playfab.editorextensions", "Source", "Assets", "PlayFabEditorExtensions", "Editor");
         public static readonly string PATH_UI = Path.Combine(PATH_MAIN, "UI");
+        public static string PATH_UI_IMG(string img) => Path.Combine(PATH_UI, "Images", img);
 
         public static class Package
         {

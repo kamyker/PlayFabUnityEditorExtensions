@@ -1,0 +1,30 @@
+﻿/*standarad name for root*/
+#rootVisualContainer {
+	flex-direction: column;
+}
+
+#header {
+	flex-direction: row;
+	justify-content: space-between;
+	height: 50;
+}
+
+#mainIMGUI {
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+Button {
+	background-image: none;
+	color: #959995;
+}
+
+Button:hover {
+	color: #18B4C2;
+}
+
+:root {
+    font: url("Fonts/Avalon-Bold.ttf");
+	font-size: 11
+	color: #959995;
+}
