@@ -265,7 +265,6 @@ namespace PlayFab.PfEditor
                 PlayFabEditorDataService.RefreshStudiosList();
 
                 PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnLogin);
-                PlayFabEditorMenu._menuState = PlayFabEditorMenu.MenuStates.Sdks;
                 PlayFabEditorPrefsSO.Save();
             }, PlayFabEditorHelper.SharedErrorCallback);
         }
@@ -285,7 +284,6 @@ namespace PlayFab.PfEditor
                 PlayFabEditorDataService.RefreshStudiosList();
                 PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnLogin);
                 PlayFabEditorPrefsSO.Save();
-                PlayFabEditorMenu._menuState = PlayFabEditorMenu.MenuStates.Sdks;
 
             }, (error) =>
             {
@@ -318,7 +316,6 @@ namespace PlayFab.PfEditor
                 PlayFabEditorDataService.RefreshStudiosList();
                 PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.OnLogin);
                 PlayFabEditorPrefsSO.Save();
-                PlayFabEditorMenu._menuState = PlayFabEditorMenu.MenuStates.Sdks;
 
             }, PlayFabEditorHelper.SharedErrorCallback);
         }

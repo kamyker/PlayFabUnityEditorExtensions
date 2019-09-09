@@ -38,7 +38,7 @@ namespace PlayFab.PfEditor
         private static void UpdateScriptableObject()
         {
             var playfabSettingsType = PlayFabEditorSDKTools.PlayFabSettings;
-            if (playfabSettingsType == null || !PlayFabEditorSDKTools.IsInstalled || !PlayFabEditorSDKTools.isSdkSupported)
+            if (playfabSettingsType == null || !PlayFabEditorSDKTools.IsInstalled)
                 return;
 
             EditorUtility.SetDirty(playfabSettingsType);

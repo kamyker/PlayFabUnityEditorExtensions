@@ -53,15 +53,11 @@ namespace PlayFab.PfEditor
         //        //end the vertical container
         //    }
 
-        //ProgressBar.Draw();
+        //    ProgressBar.Draw();
 
         //}
 
 
-        public static void OnDashbaordClicked()
-        {
-            Help.BrowseURL(PlayFabEditorDataService.ActiveTitle != null ? PlayFabEditorDataService.ActiveTitle.GameManagerUrl : PlayFabEditorHelper.GAMEMANAGER_URL);
-        }
 
     }
 }

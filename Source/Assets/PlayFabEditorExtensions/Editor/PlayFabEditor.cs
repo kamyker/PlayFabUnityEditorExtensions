@@ -14,7 +14,7 @@ namespace PlayFab.PfEditor
 
         #region EdEx Variables
         // vars for the plugin-wide event system
-        public enum EdExStates { OnLogin, OnLogout, OnMenuItemClicked, OnSubmenuItemClicked, OnHttpReq, OnHttpRes, OnError, OnSuccess, OnWarning }
+        public enum EdExStates { OnLogin, OnLogout, OnMenuItemClicked, OnSubmenuItemClicked, OnHttpReq, OnHttpRes, OnError, OnSuccess, OnWarning, GoToSettings }
 
         public delegate void PlayFabEdExStateHandler(EdExStates state, string status, string misc);
         public static event PlayFabEdExStateHandler EdExStateUpdate;
@@ -28,6 +28,8 @@ namespace PlayFab.PfEditor
         #endregion
 
         private VisualElement root;
+        private VisualElement menu;
+        private IMGUIContainer mainIMGUI;
 
         #region unity lopps & methods
 
@@ -51,27 +53,41 @@ namespace PlayFab.PfEditor
             root = rootVisualElement;
             root.Clear();
 
+            root.Add(new Header());
+            root.Add(new IMGUIContainer().AssignTo(out var progressBar));
+            progressBar.onGUIHandler = ProgressBar.Draw;
+            root.Add(new Menu().AssignTo(out menu));
+            root.Add(new IMGUIContainer().Set(name: "mainIMGUI", flexGrow: 1).AssignTo(out mainIMGUI));
             rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(Strings.PATH_UI, "styles.uss")));
-            var template = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(Path.Combine(Strings.PATH_UI, "mainView.uxml"));
-            template.CloneTree(root);
+            //var template = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(Path.Combine(Strings.PATH_UI, "mainView.uxml"));
+            //template.CloneTree(root);
+            Update();
+        }
 
-            //root.Query<IMGUIContainer>("header").First().onGUIHandler = () => PlayFabEditorHeader.DrawHeader();
-            root.Query<IMGUIContainer>("mainIMGUI").First().onGUIHandler = OnGuiInternal;
-            root.Query<Button>("gameManager").ForEach(btn
-                => btn.clickable.clicked += PlayFabEditorHeader.OnDashbaordClicked);
-            //root.Query<Image>().ForEach(img =>
-            //{
-            //    img.image = AssetDatabase.LoadAssetAtPath<Texture>(Strings.PATH_UI_IMG(img.name));
-            //    img.scaleMode = ScaleMode.ScaleToFit;
-            //});
-            //imguiContainer.AddToClassList("classExample");
-            //root.Add(imguiContainer);
+
+
+        private void Update()
+        {
+            if (window == null)
+                OnEnable();
+
+            if (PlayFabEditorAuthenticate.IsAuthenticated())
+            {
+                menu.Set(display: DisplayStyle.Flex);
+                mainIMGUI.onGUIHandler = OnGuiAuthenticated;
+            }
+            else
+            {
+                menu.Set(display: DisplayStyle.None);
+                mainIMGUI.onGUIHandler = OnGuiNotAuthenticated;
+            }
+
+            PruneBlockingRequests();
         }
 
 
         void OnDisable()
         {
-            // clean up objects:
             PlayFabEditorPrefsSO.Instance.PanelIsShown = false;
 
             if (IsEventHandlerRegistered(StateUpdateHandler))
@@ -93,13 +109,11 @@ namespace PlayFab.PfEditor
         [MenuItem("Window/PlayFab/Editor Extensions")]
         static void PlayFabServices()
         {
-            var editorAsm = typeof(UnityEditor.Editor).Assembly;
+            var editorAsm = typeof(Editor).Assembly;
             var inspWndType = editorAsm.GetType("UnityEditor.SceneHierarchyWindow");
 
             if (inspWndType == null)
-            {
                 inspWndType = editorAsm.GetType("UnityEditor.InspectorWindow");
-            }
 
             window = GetWindow<PlayFabEditor>(inspWndType);
             window.Show();
@@ -113,68 +127,47 @@ namespace PlayFab.PfEditor
             static Startup()
             {
                 if (PlayFabEditorPrefsSO.Instance.PanelIsShown || !PlayFabEditorSDKTools.IsInstalled)
-                {
                     EditorCoroutine.Start(OpenPlayServices());
+
+                IEnumerator OpenPlayServices()
+                {
+                    yield return new WaitForSeconds(1f);
+                    if (!Application.isPlaying)
+                        PlayFabServices();
                 }
             }
         }
 
-        static IEnumerator OpenPlayServices()
-        {
-            yield return new WaitForSeconds(1f);
-            if (!Application.isPlaying)
-            {
-                PlayFabServices();
-            }
-        }
-
-        //private void OnGUI()
-        //{
-        //    HideRepaintErrors(OnGuiInternal);
-        //}
-
-        private void OnGuiInternal()
+        private void OnGuiAuthenticated()
         {
             GUI.skin = PlayFabEditorHelper.uiStyle;
-
+            GUI.enabled = blockingRequests.Count == 0 && !EditorApplication.isCompiling;
             using (new UnityVertical())
             {
-                //Run all updaters prior to drawing;
-                //PlayFabEditorHeader.DrawHeader();
+                //PlayFabEditorMenu.DrawMenu();
 
-                GUI.enabled = blockingRequests.Count == 0 && !EditorApplication.isCompiling;
-
-                if (PlayFabEditorAuthenticate.IsAuthenticated())
+                switch ((Menu.MenuStates)PlayFabEditorPrefsSO.Instance.curMainMenuIdx)
                 {
-                    PlayFabEditorMenu.DrawMenu();
-
-                    switch (PlayFabEditorMenu._menuState)
-                    {
-                        case PlayFabEditorMenu.MenuStates.Sdks:
-                            PlayFabEditorSDKTools.DrawSdkPanel();
-                            break;
-                        case PlayFabEditorMenu.MenuStates.Settings:
-                            PlayFabEditorSettings.DrawSettingsPanel();
-                            break;
-                        case PlayFabEditorMenu.MenuStates.Help:
-                            PlayFabEditorHelpMenu.DrawHelpPanel();
-                            break;
-                        case PlayFabEditorMenu.MenuStates.Data:
-                            PlayFabEditorDataMenu.DrawDataPanel();
-                            break;
-                        case PlayFabEditorMenu.MenuStates.Tools:
-                            PlayFabEditorToolsMenu.DrawToolsPanel();
-                            break;
-                        case PlayFabEditorMenu.MenuStates.Packages:
-                            PlayFabEditorPackages.DrawPackagesMenu();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else
-                {
-                    PlayFabEditorAuthenticate.DrawAuthPanels();
+                    case Menu.MenuStates.Sdk:
+                        PlayFabEditorSDKTools.DrawSdkPanel();
+                        break;
+                    case Menu.MenuStates.Settings:
+                        PlayFabEditorSettings.DrawSettingsPanel();
+                        break;
+                    case Menu.MenuStates.Help:
+                        PlayFabEditorHelpMenu.DrawHelpPanel();
+                        break;
+                    case Menu.MenuStates.Data:
+                        PlayFabEditorDataMenu.DrawDataPanel();
+                        break;
+                    case Menu.MenuStates.Tools:
+                        PlayFabEditorToolsMenu.DrawToolsPanel();
+                        break;
+                    case Menu.MenuStates.Packages:
+                        PlayFabEditorPackages.DrawPackagesMenu();
+                        break;
+                    default:
+                        break;
                 }
 
                 using (new UnityVertical(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleGray1"), GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)))
@@ -183,29 +176,28 @@ namespace PlayFab.PfEditor
                 }
 
                 // help tag at the bottom of the help menu.
-                if (PlayFabEditorMenu._menuState == PlayFabEditorMenu.MenuStates.Help)
-                {
+                if ((Menu.MenuStates)PlayFabEditorPrefsSO.Instance.curMainMenuIdx == Menu.MenuStates.Help)
                     DisplayHelpMenu();
-                }
             }
-
-            PruneBlockingRequests();
 
             Repaint();
         }
 
-        private static void HideRepaintErrors(Action action)
+        private void OnGuiNotAuthenticated()
         {
-            try
+            GUI.skin = PlayFabEditorHelper.uiStyle;
+            GUI.enabled = blockingRequests.Count == 0 && !EditorApplication.isCompiling;
+            using (new UnityVertical())
             {
-                action();
+                PlayFabEditorAuthenticate.DrawAuthPanels();
+
+                using (new UnityVertical(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleGray1"), GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)))
+                {
+                    GUILayout.FlexibleSpace();
+                }
             }
-            catch (Exception e)
-            {
-                if (!e.Message.ToLower().Contains("repaint"))
-                    throw;
-                // Hide any repaint issues when recompiling
-            }
+
+            Repaint();
         }
 
         private static void DisplayHelpMenu()

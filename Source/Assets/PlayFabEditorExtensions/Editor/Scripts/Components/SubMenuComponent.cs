@@ -6,7 +6,6 @@ namespace PlayFab.PfEditor
     //[InitializeOnLoad]
     public class SubMenuComponent : UnityEditor.Editor
     {
-
         Dictionary<string, MenuItemContainer> items = new Dictionary<string, MenuItemContainer>();
         GUIStyle selectedStyle;
         GUIStyle defaultStyle;

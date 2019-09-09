@@ -29,7 +29,6 @@ namespace PlayFab.PfEditor
         private static UnityEngine.Object sdkFolder;
         private static bool isObjectFieldActive;
         private static bool isInitialized; //used to check once, gets reset after each compile;
-        public static bool isSdkSupported = true;
 
         private static PlayFabSharedSettings playFabSettings;
         public static PlayFabSharedSettings PlayFabSettings
@@ -92,7 +91,7 @@ namespace PlayFab.PfEditor
                     GUI.enabled = !EditorApplication.isCompiling && PlayFabEditor.blockingRequests.Count == 0;
                 }
 
-                if (isSdkSupported && sdkFolder != null)
+                if (sdkFolder != null)
                 {
                     using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
                     {
@@ -114,37 +113,9 @@ namespace PlayFab.PfEditor
             {
                 using (new UnityVertical(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleGray1")))
                 {
-                    isSdkSupported = false;
-                    string[] versionNumber = !string.IsNullOrEmpty(installedSdkVersion) ? installedSdkVersion.Split('.') : new string[0];
-
-                    var numerical = 0;
-                    if (string.IsNullOrEmpty(installedSdkVersion) || versionNumber == null || versionNumber.Length == 0 ||
-                        (versionNumber.Length > 0 && int.TryParse(versionNumber[0], out numerical) && numerical < 2))
-                    {
-                        //older version of the SDK
-                        using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
-                        {
-                            EditorGUILayout.LabelField("Most of the Editor Extensions depend on SDK versions >2.0. Consider upgrading to the get most features.", PlayFabEditorHelper.uiStyle.GetStyle("orTxt"));
-                        }
-
-                        using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
-                        {
-                            GUILayout.FlexibleSpace();
-                            if (GUILayout.Button("READ THE UPGRADE GUIDE", PlayFabEditorHelper.uiStyle.GetStyle("textButton"), GUILayout.MinHeight(32)))
-                            {
-                                Application.OpenURL("https://github.com/PlayFab/UnitySDK/blob/master/UPGRADE.md");
-                            }
-                            GUILayout.FlexibleSpace();
-                        }
-                    }
-                    else if (numerical >= 2)
-                    {
-                        isSdkSupported = true;
-                    }
-
                     using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
                     {
-                        if (ShowSDKUpgrade() && isSdkSupported)
+                        if (ShowSDKUpgrade())
                         {
                             GUILayout.FlexibleSpace();
                             if (GUILayout.Button("Upgrade to " + latestSdkVersion, PlayFabEditorHelper.uiStyle.GetStyle("Button"), GUILayout.MinHeight(32)))
@@ -153,7 +124,7 @@ namespace PlayFab.PfEditor
                             }
                             GUILayout.FlexibleSpace();
                         }
-                        else if (isSdkSupported)
+                        else
                         {
                             GUILayout.FlexibleSpace();
                             EditorGUILayout.LabelField("You have the latest SDK!", labelStyle, GUILayout.MinHeight(32));
@@ -163,7 +134,7 @@ namespace PlayFab.PfEditor
                 }
             }
 
-            if (isSdkSupported && string.IsNullOrEmpty(PlayFabSettings.TitleId))
+            if (string.IsNullOrEmpty(PlayFabSettings.TitleId))
             {
                 using (new UnityVertical(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleGray1")))
                 {
@@ -173,7 +144,7 @@ namespace PlayFab.PfEditor
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("SET MY TITLE", PlayFabEditorHelper.uiStyle.GetStyle("textButton")))
                         {
-                            PlayFabEditorMenu.OnSettingsClicked();
+                            PlayFabEditor.RaiseStateUpdate(PlayFabEditor.EdExStates.GoToSettings);
                         }
                         GUILayout.FlexibleSpace();
                     }
