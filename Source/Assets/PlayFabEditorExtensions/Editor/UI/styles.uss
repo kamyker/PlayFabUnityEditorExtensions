@@ -1,4 +1,7 @@
 ﻿
+#playfablogo {
+	background-image: url(Images/playfablogo.png);
+}
 
 #header {
 	flex-direction: row;
@@ -54,5 +57,5 @@ Button {
 
 :root {
 	font: url("Fonts/Avalon-Bold.ttf");
-	font-size: 11 color: #959995;
+	font-size: 11;
 }

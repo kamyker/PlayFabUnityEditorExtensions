@@ -1,3 +1,4 @@
+using KS.UxmlToCsharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,14 +54,17 @@ namespace PlayFab.PfEditor
             root = rootVisualElement;
             root.Clear();
 
-            root.Add(new Header());
+            root.AddChildrenOf(new Header());
             root.Add(new IMGUIContainer().AssignTo(out var progressBar));
             progressBar.onGUIHandler = ProgressBar.Draw;
             root.Add(new Menu().AssignTo(out menu));
             root.Add(new IMGUIContainer().Set(name: "mainIMGUI", flexGrow: 1).AssignTo(out mainIMGUI));
             rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(Strings.PATH_UI, "styles.uss")));
             //var template = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(Path.Combine(Strings.PATH_UI, "mainView.uxml"));
+            //StylePropertyReader tree = new TemplateContainer();
             //template.CloneTree(root);
+
+
             Update();
         }
 

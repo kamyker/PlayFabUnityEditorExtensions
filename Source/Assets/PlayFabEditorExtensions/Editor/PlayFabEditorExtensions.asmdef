@@ -1,7 +1,8 @@
 {
     "name": "PlayFabEditorExtensions",
     "references": [
-        "PlayFabShared"
+        "PlayFabShared",
+        "KS.UxmlToCsharp"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
