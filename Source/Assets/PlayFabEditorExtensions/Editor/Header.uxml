@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+  <ui:Box name="header" style="--csName: Header;">
+    <Style path="Packages/com.playfab.editorextensions/Source/Assets/PlayFabEditorExtensions/Editor/Header.uss" />
+    <ui:Image name="playfablogo" style="max-width: 230px; flex-grow: 0.65;" />
+    <ui:Box style="flex-direction: row; align-items: center;">
+      <ui:Button name="gMText" text="GAME MANAGER" class="gameManagerBtn" style="--csName: GMText;" />
+      <ui:Button name="gMIcon" class="gameManagerBtn" />
+    </ui:Box>
+  </ui:Box>
+</ui:UXML>
