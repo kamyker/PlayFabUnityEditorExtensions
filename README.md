@@ -53,7 +53,7 @@ catch(PlayFabError e)
 No recompilation of PlayFabSDK
 
 ## Package Manager
-Simplyfies how sdks are installed, upgraded and managed. Makes it really easy to make plugins for playfab.
+Simplifies how sdks are installed, upgraded and managed. Makes it really easy to make plugins for playfab.
 
 # Tips
 ## Fire Forget
